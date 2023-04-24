@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Калькулятор</title>
+    </head>
+    <body>
+        <header>
+            <table>
+                <tr>
+                    <td>
+                        <img src="https://www.mirea.ru/upload/medialibrary/80f/MIREA_Gerb_Colour.png" alt="ну без герба значит">
+                    </td>
+                    <td>
+                        <span>Калюжный Егор Евгеньевич</span>
+                        <br>
+                        <span>ИНБО-07-20</span>
+                    </td>
+                </tr>
+            </table>
+        </header>
+        <main>
+            <input id="result" readonly type="text">
+            <table>
+                <tr>
+                    <td id="button1" class="common digit">1</td>
+                    <td id="button2" class="common digit">2</td>
+                    <td id="button3" class="common digit">3</td>
+                    <td id="button_plus" class="common operation">+</td>
+                </tr>
+                <tr>
+                    <td id="button4" class="common digit">4</td>
+                    <td id="button5" class="common digit">5</td>
+                    <td id="button6" class="common digit">6</td>
+                    <td id="button_minus" class="common operation">-</td>
+                </tr>
+                <tr>
+                    <td id="button7" class="common digit">7</td>
+                    <td id="button8" class="common digit">8</td>
+                    <td id="button9" class="common digit">9</td>
+                    <td id="button_multiply" class="common operation">×</td>
+                </tr>
+                <tr>
+                    <td id="button0" colspan="3" class="common digit">0</td>
+                    <td id="button_divide" class="common operation">÷</td>
+                </tr>
+                <tr>
+                    <td id="button_open_bracket" class="common operation">(</td>
+                    <td id="button_close_bracket" class="common operation">)</td>
+                    <td id="button_backspace" class="common operation">❮</td>
+                    <td id="button_equals" class=" common operation">=</td>
+                </tr>
+            </table>
+        </main>
+    </body>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        header {
+            display: inline;
+            width: 100%;
+        }
+        img {
+            max-height: 100px;
+            max-width: 100px;
+            float: left;
+        }
+        h1 {
+            text-align: center;
+        }
+        span {
+            float: right;
+        }
+        td {
+            padding: 20px;
+            border-collapse: collapse;
+        }
+        td.common {
+            border: 2px solid black;
+            text-align: center;
+            font-size: 25px;
+        }
+        td.digit {
+            background-color: lightblue;
+        }
+        td.operation {
+            background-color: skyblue;
+        }
+        main {
+            margin: 50px auto auto;
+            display: table;
+            min-width: 250px;
+            max-width: 500px;
+            min-height: 400px;
+            max-height: 800px;
+        }
+        table {
+            width: 100%;
+            cursor: default;
+        }
+        input {
+            height: 50px;
+            width: 98%;
+            font-size: 25px;
+            cursor: default;
+        }
+    </style>
+
+    <script>
+        button0.onclick = function() {
+            result.value += "0";
+        };
+        button1.onclick = function() {
+            result.value += "1";
+        };
+        button2.onclick = function() {
+            result.value += "2";
+        };
+        button3.onclick = function() {
+            result.value += "3";
+        };
+        button4.onclick = function() {
+            result.value += "4";
+        };
+        button5.onclick = function() {
+            result.value += "5";
+        };
+        button6.onclick = function() {
+            result.value += "6";
+        };
+        button7.onclick = function() {
+            result.value += "7";
+        };
+        button8.onclick = function() {
+            result.value += "8";
+        };
+        button9.onclick = function() {
+            result.value += "9";
+        };
+
+        button_plus.onclick = function() {
+            result.value += "+";
+        };
+        button_minus.onclick = function() {
+            result.value += "-";
+        };
+        button_multiply.onclick = function() {
+            result.value += "×";
+        };
+        button_divide.onclick = function() {
+            result.value += "÷";
+        };
+        button_open_bracket.onclick = function() {
+            result.value += "(";
+        };
+        button_close_bracket.onclick = function() {
+            result.value += ")";
+        };
+
+        button_backspace.onclick = function() {
+            if (result.value.length != 0) {
+                result.value = result.value.slice(0, result.value.length-1);
+            }
+        };
+        button_backspace.oncontextmenu = function(event) {
+            event.preventDefault();
+            result.value = "";
+        };
+
+        button_equals.onclick = function() {
+            let expression = '';
+            for (let i = 0; i < result.value.length; i++) {
+                if (result.value[i] == '×') {
+                    expression += '*';
+                }
+                else if (result.value[i] == '÷') {
+                    expression += '%2f';
+                }
+                else if (result.value[i] == '(') {
+                    expression += '%28';
+                }
+                else if (result.value[i] == ')') {
+                    expression += '%29';
+                }
+                else if (result.value[i] == '+') {
+                    expression += '%2b';
+                }
+                else {
+                    expression += result.value[i];
+                }
+            }
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://127.0.0.1:8000/calculate?expression=\"" + expression + "\"");
+            xhr.send();
+            xhr.onload = function() {
+                if (xhr.status != 200) {
+                    alert("Произошла непредвиденная ошибка запроса!")
+                }
+                else {
+                    result.value = xhr.response;
+                }
+            };
+        };
+    </script>
+</html>
